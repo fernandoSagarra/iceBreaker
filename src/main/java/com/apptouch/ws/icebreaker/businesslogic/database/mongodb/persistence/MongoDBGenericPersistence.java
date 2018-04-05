@@ -5,13 +5,20 @@
  */
 package com.apptouch.ws.icebreaker.businesslogic.database.mongodb.persistence;
 
+import com.apptouch.ws.icebreaker.businesslogic.database.mongodb.config.MongoDB;
+import com.apptouch.ws.icebreaker.businesslogic.database.mongodb.entities.BaseEntity;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
+
 /**
  *
  * @author fernando
  */
 public class MongoDBGenericPersistence {
     
-    /*protected final Datastore mongoDatastore;
+    protected final Datastore mongoDatastore;
     
     public MongoDBGenericPersistence(){
         mongoDatastore = MongoDB.instance().getDatabase();
@@ -58,5 +65,5 @@ public class MongoDBGenericPersistence {
          mongoDatastore.update(updateQuery, ops);
          
         return mongoDatastore.find(clazz).field("_id").equal(id).get();
-    }*/
+    }
 }

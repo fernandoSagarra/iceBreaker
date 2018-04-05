@@ -1,6 +1,14 @@
 
 package com.apptouch.ws.icebreaker.businesslogic.database.mongodb.persistence;
 
+import com.apptouch.ws.icebreaker.businesslogic.database.mongodb.entities.BaseEntity;
+import com.apptouch.ws.icebreaker.businesslogic.database.mongodb.entities.UserBaseEntity;
+import com.apptouch.ws.icebreaker.businesslogic.model.SubscriberModel;
+import com.apptouch.ws.icebreaker.businesslogic.utils.exceptions.jerseyexceptions.MongoUpdateException;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
+
 /**
  *
  * @author fernando
@@ -15,7 +23,7 @@ public class SubscriberModelPersistence extends UserGenericPersistence{
  * @param Object id: A given Id to search for
  * @return: A matching subscriber with a projection on favoritePlaces field
  */  
-    /*public SubscriberModel getAllFavoritePlacesIdsForSubscriber(Object id){
+    public SubscriberModel getAllFavoritePlacesIdsForSubscriber(Object id){
         SubscriberModel result;
         ObjectId userId = null;
         if(id == null){
@@ -38,7 +46,7 @@ public class SubscriberModelPersistence extends UserGenericPersistence{
  * @param Object id: A given Id to search for
  * @return: A matching subscriber with a projection on friends field
  */    
-    /*public SubscriberModel getAllFriendsIdsForSubscriber(Object id){
+    public SubscriberModel getAllFriendsIdsForSubscriber(Object id){
         SubscriberModel result;
         String userId = null;
         if(id == null){
@@ -80,20 +88,7 @@ public class SubscriberModelPersistence extends UserGenericPersistence{
        mongoDatastore.update(updateQuery, ops,false);  
        return friend;
     }
-    public void addNewFavoritePlace(ObjectId id, PlaceModel place){
-       if(place == null){
-           throw new IllegalArgumentException("place can't be null");
-       }
-       if(id == null){
-           throw new IllegalArgumentException("Id can't be null");
-       }
-       Query<SubscriberModel> updateQuery = mongoDatastore.find(SubscriberModel.class);
-       updateQuery.field("id").equal(id);
-       UpdateOperations ops = mongoDatastore
-               .createUpdateOperations(SubscriberModel.class)
-               .addToSet("favoritePlaces",place);
-       mongoDatastore.update(updateQuery, ops, false);       
-    }
+    
     
     public boolean updateSubscriberProfileImageUrl(Object id, String url){
         String userId = "";
@@ -109,5 +104,5 @@ public class SubscriberModelPersistence extends UserGenericPersistence{
             throw new MongoUpdateException("Unknown subscriber to update profileUrl to");
         }        
         return (updateFieldById(SubscriberModel.class, userId, "pictureUrl", url) instanceof BaseEntity);
-    }*/
+    }
 }

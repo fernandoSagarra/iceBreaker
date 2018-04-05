@@ -1,6 +1,10 @@
 
 package com.apptouch.ws.icebreaker.businesslogic.database.mongodb.persistence;
 
+import com.apptouch.ws.icebreaker.businesslogic.database.mongodb.entities.UserBaseEntity;
+import java.util.List;
+import org.mongodb.morphia.query.Query;
+
 /**
  *
  * @author fernando
@@ -10,7 +14,7 @@ public class UserGenericPersistence extends MongoDBGenericPersistence{
     public UserGenericPersistence() {
         super();
     }
-   /* public UserBaseEntity saveUserEntity(UserBaseEntity user) {
+    public UserBaseEntity saveUserEntity(UserBaseEntity user) {
         
         return (UserBaseEntity)persist(user);
     }   
@@ -41,6 +45,6 @@ public class UserGenericPersistence extends MongoDBGenericPersistence{
                 query.criteria(attributes.get(1)).equal(values.get(1))
         );
         return query.get();
-    }*/
+    }
     
 }
