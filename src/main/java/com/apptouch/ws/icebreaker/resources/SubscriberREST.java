@@ -194,7 +194,7 @@ public class SubscriberREST {
         return Response.status(Response.Status.ACCEPTED)
                 .entity(friendsEntity).build();
     }
-    @POST
+   /* @POST
     @Path("/images")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFile(
@@ -226,6 +226,6 @@ public class SubscriberREST {
         return (result)?Response.status(200)
                 .entity("File saved to " + uploadedFileLocation).build():Response.status(500)
                 .entity("File Not saved ").build(); //PLEASE CHANGE RESPONSE.STATUS
-    }
+    }*/
 
 }
