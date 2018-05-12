@@ -10,8 +10,6 @@ import com.apptouch.ws.icebreaker.businesslogic.utils.exceptions.jerseyexception
 import com.apptouch.ws.icebreaker.businesslogic.utils.exceptions.jerseyexceptions.MongoUpdateException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.MongoException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +27,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 
@@ -41,7 +38,14 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 @Path("/subscribers")
 public class SubscriberREST {
     
-    SubscriberService subscriberService = new SubscriberService();  
+    private static final Logger LOGGER = Logger.getLogger(SubscriberREST.class.getName());
+    
+    @Autowired    
+    private SubscriberService subscriberService;  
+    
+    public SubscriberREST(){
+        LOGGER.info("HelloSubscriberREST()");
+    }
     
     @GET
     @Path("/{id}")
@@ -194,38 +198,5 @@ public class SubscriberREST {
         return Response.status(Response.Status.ACCEPTED)
                 .entity(friendsEntity).build();
     }
-   /* @POST
-    @Path("/images")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadFile(
-            @FormDataParam("id") String id,
-            @FormDataParam("file") InputStream uploadedInputStream,
-            @FormDataParam("file") FormDataContentDisposition fileDetail) {
-        boolean result = false;
-        // check if all form parameters are provided
-        if (uploadedInputStream == null || fileDetail == null) {
-            return Response.status(400).entity("Invalid form data").build();
-        }
-        // create our destination folder, if it not exists
-        try {
-            CommonUtils.createFolderIfNotExists(CommonUtils.getImageLocation());
-        } catch (SecurityException se) {
-            return Response.status(500)
-                    .entity("Can not create destination folder on server")
-                    .build();
-        }
-        String uploadedFileLocation = CommonUtils.getImageLocation() + fileDetail.getFileName();
-        try {
-            CommonUtils.saveFile(uploadedInputStream, uploadedFileLocation);
-            result = subscriberService.updateSubscriberProfileImageUrl(id, uploadedFileLocation);
-        } catch (IOException e) {
-            return Response.status(500).entity("Can not save file").build();
-        }catch (MongoUpdateException updateEx){
-            throw new MongoUpdateException(updateEx.getMessage());
-        }
-        return (result)?Response.status(200)
-                .entity("File saved to " + uploadedFileLocation).build():Response.status(500)
-                .entity("File Not saved ").build(); //PLEASE CHANGE RESPONSE.STATUS
-    }*/
 
 }
