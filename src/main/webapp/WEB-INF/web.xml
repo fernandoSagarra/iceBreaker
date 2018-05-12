@@ -6,11 +6,19 @@
         <servlet-name>Jersey Web Application</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
-            <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>com.apptouch.ws.icebreaker</param-value>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.apptouch.ws.icebreaker.businesslogic.core.configuration.iceBreakerApp</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+   
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+    </context-param>
     <servlet-mapping>
         <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/rest/*</url-pattern>
