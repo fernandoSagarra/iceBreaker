@@ -7,6 +7,8 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
@@ -16,38 +18,27 @@ import org.mongodb.morphia.Morphia;
  */
 public class MongoDB {
     
-    /*This values should eventually be injected through spring*/
-    public static final String DB_HOST = "127.0.0.1";
-    public static final int DB_PORT = 27017;
-    public static final String DB_NAME = "icebreaker";
+    private Morphia morphia;
+    private Datastore datastore;
+    private MongoClient mongoClient;
+    private String mappedPackage;
+    private String databaseName;
 
-    private static final MongoDB INSTANCE = new MongoDB();
-    private final Datastore datastore;
-
-    private MongoDB() {
-        MongoClientOptions mongoOptions = MongoClientOptions.builder()
-                .socketTimeout(60000)
-                .connectTimeout(15000)
-                .maxConnectionIdleTime(600000)
-                .readPreference(ReadPreference.primaryPreferred())
-                .writeConcern(WriteConcern.ACKNOWLEDGED)
-                .build();
-        MongoClient mongoClient;
-        mongoClient = new MongoClient(new ServerAddress(DB_HOST, DB_PORT), mongoOptions);
-
-        datastore = new Morphia().mapPackage(BaseEntity.class.getPackage().getName())
-                .createDatastore(mongoClient, DB_NAME);
-        datastore.ensureIndexes();
-        datastore.ensureCaps();
-
+    
+    public MongoDB(Morphia morphia, MongoClient mongoClient, String mappedPackage, String databaseName) throws ClassNotFoundException{
+        this.morphia = morphia;
+        this.mongoClient = mongoClient;
+        this.mappedPackage = mappedPackage;
+        this.databaseName = databaseName;
+        
+        this.morphia.mapPackage(this.mappedPackage);
+        
+        this.datastore = this.morphia.createDatastore(mongoClient, databaseName);
+        
+        this.datastore.ensureIndexes();
+        this.datastore.ensureCaps();
     }
-
-    public static MongoDB instance() {
-        return INSTANCE;
-    }
-
-    // Creating the mongo connection is expensive - (re)use a singleton for performance reasons.
-    // Both the underlying Java driver and Datastore are thread safe.
+    
     public Datastore getDatabase() {
         return datastore;
     }
