@@ -6,7 +6,7 @@
 package com.apptouch.ws.icebreaker.businesslogic.services;
 
 import com.apptouch.ws.icebreaker.businesslogic.database.mongodb.entities.UserBaseEntity;
-import com.apptouch.ws.icebreaker.businesslogic.database.mongodb.persistence.SubscriberModelPersistence;
+import com.apptouch.ws.icebreaker.businesslogic.database.mongodb.persistence.MongoDBUserPersistence;
 import com.apptouch.ws.icebreaker.businesslogic.model.SubscriberModel;
 import com.apptouch.ws.icebreaker.businesslogic.repositories.SubscriberRepository;
 import com.apptouch.ws.icebreaker.businesslogic.utils.MapperUtils;
@@ -23,9 +23,15 @@ import java.util.logging.Logger;
  */
 public class SubscriberService implements SubscriberRepository{
     
-    SubscriberModelPersistence userPersistence = new SubscriberModelPersistence();
+    private MongoDBUserPersistence userPersistence;
     
-    public SubscriberService(){}      
+    public MongoDBUserPersistence getUserPersistence() {
+        return userPersistence;
+    }
+
+    public void setUserPersistence(MongoDBUserPersistence userPersistence) {
+        this.userPersistence = userPersistence;
+    }
 
     @Override
     public SubscriberModel getAllFavoritePlacesIdsForSubscriber(Object id) {
@@ -93,6 +99,5 @@ public class SubscriberService implements SubscriberRepository{
     public boolean updateSubscriberProfileImageUrl(Object id, String url) {
         return userPersistence.updateSubscriberProfileImageUrl(id, url);
     }
-
-       
+    
 }
