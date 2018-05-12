@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+  
+    
+     <!-- Mongo -->
+    <bean id="writeConcern" class="com.mongodb.WriteConcern">
+        <constructor-arg name="w" value="WriteConcern.ACKNOWLEDGED"/>  <!--Equivale a 1 creo -->
+        <!--<constructor-arg name="wtimeout" value="${mongo.options.write-concern.wtimeout}"/>
+        <constructor-arg name="fsync" value="${mongo.options.write-concern.fsync}"/>
+        <constructor-arg name="j" value="${mongo.options.write-concern.j}"/> -->
+    </bean>
+    
+    <bean id="mongoClientOptionsBuilder" class="com.mongodb.MongoClientOptions" factory-method="builder"/>
+    
+    <!--<bean factory-bean="mongoClientOptionsBuilder" factory-method="minConnectionsPerHost">
+        <constructor-arg value="${mongo.options.min-connections-per-host}"/>
+    </bean>
+    
+    <bean factory-bean="mongoClientOptionsBuilder" factory-method="connectionsPerHost">
+        <constructor-arg value="${mongo.options.connections-per-host}"/>
+    </bean>
+    <bean factory-bean="mongoClientOptionsBuilder" factory-method="threadsAllowedToBlockForConnectionMultiplier">
+        <constructor-arg value="${mongo.options.threads-allowed-to-block-for-connection-multiplier}"/>
+    </bean>
+    <bean factory-bean="mongoClientOptionsBuilder" factory-method="maxWaitTime">
+        <constructor-arg value="${mongo.options.max-wait-time}"/>
+    </bean> -->
+    
+    <bean factory-bean="mongoClientOptionsBuilder" factory-method="maxConnectionIdleTime">
+        <constructor-arg value="600000"/>
+    </bean>
+    <!--<bean factory-bean="mongoClientOptionsBuilder" factory-method="maxConnectionLifeTime">
+        <constructor-arg value="${mongo.options.max-connection-life-time}"/>
+    </bean> -->
+    <bean factory-bean="mongoClientOptionsBuilder" factory-method="connectTimeout">
+        <constructor-arg value="15000"/>
+    </bean>
+    <bean factory-bean="mongoClientOptionsBuilder" factory-method="socketTimeout">
+        <constructor-arg value="60000"/>
+    </bean>
+    <!--<bean factory-bean="mongoClientOptionsBuilder" factory-method="socketKeepAlive">
+        <constructor-arg value="${mongo.options.socket-keep-alive}"/>
+    </bean> -->
+    <bean factory-bean="mongoClientOptionsBuilder" factory-method="writeConcern">
+        <constructor-arg ref="writeConcern"/>
+    </bean>
+    
+    <bean id="mongoClient" class="com.mongodb.MongoClient">
+        <constructor-arg name="addr">
+            <bean class="com.mongodb.ServerAddress">
+                <constructor-arg name="host" value="127.0.0.1"/>
+                <constructor-arg name="port" value="27017"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg name="options">
+            <bean factory-bean="mongoClientOptionsBuilder" factory-method="build"/>
+        </constructor-arg>
+    </bean>
+    <bean id="morphia" class="org.mongodb.morphia.Morphia"/> 
+    
+    <bean id="mongoDB" class="com.apptouch.ws.icebreaker.businesslogic.database.mongodb.config.MongoDB">
+        <constructor-arg name="morphia"         ref="morphia" />
+        <constructor-arg name="mongoClient"     ref="mongoClient" />
+        <constructor-arg name="mappedPackage"   value="com.apptouch.ws.icebreaker.businesslogic.database.mongodb.entities" />
+        <constructor-arg name="databaseName"    value="icebreaker" />
+    </bean>
+    
+    <bean id="userPersistence" class="com.apptouch.ws.icebreaker.businesslogic.database.mongodb.persistence.MongoDBUserPersistence">
+        <property name="mongoDB"  ref="mongoDB" />
+    </bean>
+    <bean id="subscriberService" class="com.apptouch.ws.icebreaker.businesslogic.services.SubscriberService">   
+        <property name="userPersistence"  ref="userPersistence" />
+    </bean>
+    <bean id="subscriberREST" class="com.apptouch.ws.icebreaker.resources.SubscriberREST" scope="request">
+        <property name="subscriberService" ref="subscriberService" />
+    </bean> 
+</beans>
