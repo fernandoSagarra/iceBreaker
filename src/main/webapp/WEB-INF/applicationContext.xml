@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" 
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd">
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd"
+>
     
   
-    
+    <context:property-placeholder location="classpath:application.properties" />
      <!-- Mongo -->
     <bean id="writeConcern" class="com.mongodb.WriteConcern">
-        <constructor-arg name="w" value="WriteConcern.ACKNOWLEDGED"/>  <!--Equivale a 1 creo -->
+       <!--ACKNOWLEDGED Equivale a 1 pero si lo asocio al param w tengo error: 
+        mongo exception cannot use non-majority 'w' mode WriteConcern.ACKNOWLEDGED 
+        when a host is not a member of a replica set. Porque en localhost no tengo 
+        ninguna replica set. Es decir ningun backup. Retiro esto por el momento y 
+        deberia funcionar ya que por defecto el writeConcern es WriteConcern.ACKNOWLEDGED-->
+
+        <constructor-arg name="w" value="${mongo.writeConcern}"/> 
         <!--<constructor-arg name="wtimeout" value="${mongo.options.write-concern.wtimeout}"/>
         <constructor-arg name="fsync" value="${mongo.options.write-concern.fsync}"/>
         <constructor-arg name="j" value="${mongo.options.write-concern.j}"/> -->
@@ -31,29 +41,29 @@
     </bean> -->
     
     <bean factory-bean="mongoClientOptionsBuilder" factory-method="maxConnectionIdleTime">
-        <constructor-arg value="600000"/>
+        <constructor-arg value="${mongo.maxConnectionIdleTime}"/>
     </bean>
     <!--<bean factory-bean="mongoClientOptionsBuilder" factory-method="maxConnectionLifeTime">
         <constructor-arg value="${mongo.options.max-connection-life-time}"/>
     </bean> -->
     <bean factory-bean="mongoClientOptionsBuilder" factory-method="connectTimeout">
-        <constructor-arg value="15000"/>
+        <constructor-arg value="${mongo.connectTimeout}"/>
     </bean>
     <bean factory-bean="mongoClientOptionsBuilder" factory-method="socketTimeout">
-        <constructor-arg value="60000"/>
+        <constructor-arg value="${mongo.socketTimeout}"/>
     </bean>
     <!--<bean factory-bean="mongoClientOptionsBuilder" factory-method="socketKeepAlive">
         <constructor-arg value="${mongo.options.socket-keep-alive}"/>
     </bean> -->
-    <bean factory-bean="mongoClientOptionsBuilder" factory-method="writeConcern">
+    <!--<bean factory-bean="mongoClientOptionsBuilder" factory-method="writeConcern">
         <constructor-arg ref="writeConcern"/>
-    </bean>
+    </bean> -->
     
     <bean id="mongoClient" class="com.mongodb.MongoClient">
         <constructor-arg name="addr">
             <bean class="com.mongodb.ServerAddress">
-                <constructor-arg name="host" value="127.0.0.1"/>
-                <constructor-arg name="port" value="27017"/>
+                <constructor-arg name="host" value="${mongo.host}"/>
+                <constructor-arg name="port" value="${mongo.port}"/>
             </bean>
         </constructor-arg>
         <constructor-arg name="options">
@@ -65,8 +75,8 @@
     <bean id="mongoDB" class="com.apptouch.ws.icebreaker.businesslogic.database.mongodb.config.MongoDB">
         <constructor-arg name="morphia"         ref="morphia" />
         <constructor-arg name="mongoClient"     ref="mongoClient" />
-        <constructor-arg name="mappedPackage"   value="com.apptouch.ws.icebreaker.businesslogic.database.mongodb.entities" />
-        <constructor-arg name="databaseName"    value="icebreaker" />
+        <constructor-arg name="mappedPackage"   value="${mongo.mappedPackage}" />
+        <constructor-arg name="databaseName"    value="${mongo.databaseName}" />
     </bean>
     
     <bean id="userPersistence" class="com.apptouch.ws.icebreaker.businesslogic.database.mongodb.persistence.MongoDBUserPersistence">
