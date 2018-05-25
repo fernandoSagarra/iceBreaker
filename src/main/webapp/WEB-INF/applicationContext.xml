@@ -88,4 +88,8 @@
     <bean id="subscriberREST" class="com.apptouch.ws.icebreaker.resources.SubscriberREST" scope="request">
         <property name="subscriberService" ref="subscriberService" />
     </bean> 
+    <bean id="defalStatusCreator" class="com.apptouch.ws.icebreaker.businesslogic.core.configuration.DefaultStatusCreator" init-method="init">
+        <property name="createDefaultStatus" value="${status.createDefaultCollection}" />
+        <property name="mongoDB"  ref="mongoDB" />
+    </bean> 
 </beans>

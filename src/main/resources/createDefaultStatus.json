@@ -1,0 +1,9 @@
+{
+    "defaultStatus":[
+                        {"title": "open", "action": { "level": 0, "parent": "open", "access":["all"] }, "type": "default"},
+                        {"title": "chat", "action": { "level": 2, "parent": "chat", "access":["chat","invitation"] }, "type": "default"},
+                        {"title": "invitation", "action": { "level": 3, "parent": "invitation", "access":["invitation"] }, "type": "default"},
+                        {"title": "closed", "action": { "level": 4, "parent": "closed", "access":["none"] }, "type": "default"},
+                        {"title": "talk", "action": { "level": 1, "parent": "talk", "access":["talk","chat","invitation"] }, "type": "default"}
+                    ]
+}
